@@ -8,6 +8,9 @@ build/
 dist/
 .coverage
 htmlcov/
+coverage.xml
+reports/
+.tools/
 .env
 .env.*
 !.env.example

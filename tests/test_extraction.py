@@ -11,6 +11,8 @@ from email_test_client import (
     extract_button_link,
 )
 
+pytestmark = [pytest.mark.unit, pytest.mark.regression]
+
 
 def html_message(html: str, **kwargs: str) -> bytes:
     message = EmailMessage()
@@ -19,6 +21,7 @@ def html_message(html: str, **kwargs: str) -> bytes:
 
 
 @pytest.mark.parametrize("label", ["Activate account", "Accept invitation"])
+@pytest.mark.smoke
 def test_selects_labeled_button_instead_of_first_link(label):
     raw = html_message(
         '<a href="https://example.com/logo">Logo</a>'

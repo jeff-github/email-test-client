@@ -4,8 +4,10 @@ A Python 3.12+ library for end-to-end tests that share an IMAP mailbox.
 
 ## Current status
 
-Step 2: a pure link-extraction function with synthetic unit tests is implemented.
-The IMAP client and wait loop are not implemented yet. The assignment's
+The extraction function, IMAP client, and wait loop are implemented. Pytest covers
+unit, public Python API, regression, smoke, and real-server end-to-end behavior.
+See [testing instructions](docs/testing.md) for commands and coverage boundaries.
+The assignment's
 `activation.eml` and `site_invitation.eml` samples were not accessible in the chat
 or located in the project/Downloads folders; sample inspection and regression
 tests remain pending. Synthetic messages are not substitutes for those fixtures.
@@ -26,14 +28,73 @@ Python 3.13 is the initial local development interpreter. The package declares
 Python 3.12 as its minimum; actual execution on 3.12 remains to be verified.
 Explicit virtual-environment executable paths avoid requiring shell activation.
 
-Run the extraction tests (no Docker or credentials needed):
+Run fast tests (no Docker or credentials needed):
 
 ```powershell
 .\.venv\Scripts\python.exe -m pytest -m "not integration"
 ```
 
-Docker/GreenMail setup and integration test commands will be documented when
-they are implemented.
+Run local server tests using the pinned, loopback-only GreenMail service:
+
+```powershell
+docker compose up -d
+.\.venv\Scripts\python.exe -m pytest --run-e2e -m e2e
+docker compose down
+```
+
+The fixture waits for SMTP and authenticated IMAP readiness. An unavailable server
+fails an explicitly requested E2E run. The server uses disposable test credentials
+and routes `qa+<unique>@example.com` to the same `qa` mailbox. No personal Gmail
+account is used. A Java fallback is described in the testing instructions.
+
+## Waiting for a message
+
+```python
+import os
+from uuid import uuid4
+
+from email_test_client import EmailClient, ImapConfig
+
+recipient = f"qa+{uuid4().hex}@example.com"
+# Trigger the application's signup with this recipient before waiting.
+config = ImapConfig(
+    host=os.environ["IMAP_HOST"],
+    username=os.environ["IMAP_USERNAME"],
+    password=os.environ["IMAP_PASSWORD"],
+)
+with EmailClient(config) as mailbox:
+    link = mailbox.wait_for_link(
+        recipient=recipient,
+        button_text="Activate account",
+        timeout=30,
+    )
+```
+
+Defaults: verified TLS on port 993, INBOX, LOGIN authentication, one-second polling,
+and a ten-second socket inactivity timeout. STARTTLS and explicit plaintext are
+also available; set the corresponding port yourself (typically 143, or 33143 for
+this local test server). Plaintext is for the local test setup. OAuth token
+acquisition is not implemented; use a server/account that permits LOGIN.
+
+Use one client context per concurrent caller. The client searches already-arrived
+mail immediately, validates the exact parsed `To` address, and fetches by UID with
+`BODY.PEEK[]` in a read-only mailbox. It never deletes mail or uses unread flags as
+coordination. Domain comparison ignores case; local parts retain case. Only bare
+ASCII recipient addresses are accepted. Bcc-only mail or a rewritten `To` header
+is not supported in this version.
+
+Messages with no requested button are skipped. Invalid matching links fail
+immediately. Multiple matches in a search must agree on the destination; otherwise
+`AmbiguousLinkError` is raised. This checks the current search snapshot, not future
+deliveries. Generate a fresh recipient for each independent request.
+
+`EmailTimeoutError`, `AuthenticationError`, and `MailboxError` distinguish absence
+of mail, rejected credentials, and protocol/network failures. Failed connections
+are not automatically retried. The monotonic wait budget bounds polling and caps
+socket inactivity timeouts; it is not a hard wall-clock cancellation guarantee
+against DNS stalls or a server streaming forever. Connection setup is outside the
+wait budget. Full recipient searches recur, but examined bodies are downloaded
+only once per wait unless UIDVALIDITY changes.
 
 ## Extracting a button link
 
@@ -64,14 +125,16 @@ excludes attachments. These choices must be checked against the actual samples.
 ## Design and scope
 
 See [the design record](docs/design.md) for proposed behavior, assumptions,
-tradeoffs, and the implementation sequence. IMAP and polling sections describe
-intended behavior; extraction behavior above is implemented and unit-tested.
+tradeoffs, and the implementation sequence. See [the test matrix](docs/testing.md)
+for evidence and remaining gaps, including real email fixtures and TLS integration.
 
 ## AI assistance
 
 OpenAI Codex assisted with reviewing the assignment, proposing the implementation
 plan, creating the packaging configuration and documentation, and implementing
-the extraction function and synthetic tests. Codex ran pytest and Ruff locally.
+the extraction function, IMAP polling, and the pytest testing framework, including
+synthetic unit/API/regression tests, GreenMail E2E tests, smoke checks, and CI.
+Codex ran local validation; see the test documentation for actual results.
 It has not inspected the recruiter's EML files. Update this record as work
 progresses. The candidate should review and understand each change before submission.
 

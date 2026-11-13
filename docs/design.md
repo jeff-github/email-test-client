@@ -23,8 +23,8 @@ which request produced a message. Document that limitation explicitly.
 
 ## 2. Small, separate responsibilities
 
-Planned components are an IMAP transport, pure message parsing functions, and a
-wait loop. Tests can exercise parsing and timeout behavior without a server;
+Implemented components are IMAP access and waiting in `client.py`, and pure
+message parsing in `extraction.py`. Tests exercise timeout behavior without a server;
 integration tests prove actual protocol behavior against a server.
 
 Use Python's standard `imaplib` and `email` packages initially. The first extraction
@@ -51,7 +51,7 @@ Start with a simple correct search and measure before adding cursor complexity.
 
 ## 4. Explicit outcomes
 
-The planned convenience API waits for a recipient's message and returns the link
+The convenience API waits for a recipient's message and returns the link
 behind a specified button label. Extract from decoded MIME HTML with an HTML
 parser, not a regex over raw email or the first URL in the message.
 
@@ -67,12 +67,24 @@ returned href; query parameters, percent escapes, and redirects are preserved.
 This is a structural HTML parser, not a renderer: CSS visibility, image labels,
 VML, plain-text link inference, and general broken-HTML repair are out of scope
 for now. The actual sample files must be inspected to confirm this scope fits.
-Multiple matching messages remain a separate decision for the wait-loop step.
+Within one search snapshot, multiple matching messages must agree on their URL;
+otherwise the wait raises `AmbiguousLinkError`. Messages lacking the requested
+button are skipped; other extraction failures surface immediately. A successful
+result cannot account for messages that arrive after its search snapshot.
 Timeouts, authentication failures, transport failures, and extraction failures
 should be distinguishable. Diagnostics must not expose credentials or link tokens.
 
 Use a monotonic deadline and bound network operations as well as polling sleeps.
 Avoid hiding permanent errors behind timeout retries.
+
+The implementation re-selects read-only on each poll, checks UIDVALIDITY, searches
+the full matching recipient set, and caches examined UIDs only within that wait.
+It trades a small metadata search per poll for simpler correctness than a UID
+cursor. No reconnect/retry loop can silently reset the wait budget. Network errors
+close the unusable connection. Socket inactivity is capped by remaining time,
+but DNS and indefinite streaming are not hard wall-clock bounded. Context setup
+has a separate network timeout. Context exit shuts down the socket directly;
+it does not issue CLOSE/EXPUNGE or wait for a LOGOUT reply.
 
 ## 5. Repository choices
 

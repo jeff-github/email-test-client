@@ -11,7 +11,7 @@ requires-python = ">=3.12"
 dependencies = []
 
 [project.optional-dependencies]
-dev = ["build>=1.2,<2", "pytest>=8,<10", "ruff>=0.9,<1"]
+dev = ["build>=1.2,<2", "pytest>=8,<10", "pytest-cov>=6,<8", "ruff>=0.9,<1"]
 
 [tool.setuptools.packages.find]
 where = ["src"]
@@ -19,7 +19,21 @@ where = ["src"]
 [tool.pytest.ini_options]
 testpaths = ["tests"]
 addopts = "-ra --strict-markers"
-markers = ["integration: requires a running local IMAP/SMTP server"]
+markers = [
+    "smoke: minimal package/API or real-server readiness checks",
+    "unit: isolated extraction behavior",
+    "api: public Python API and IMAP adapter contracts",
+    "regression: named failure modes that must remain fixed",
+    "e2e: real SMTP delivery and IMAP reading",
+    "integration: requires a running local IMAP/SMTP server",
+]
+
+[tool.coverage.run]
+branch = true
+source = ["email_test_client"]
+
+[tool.coverage.report]
+show_missing = true
 
 [tool.ruff]
 target-version = "py312"
