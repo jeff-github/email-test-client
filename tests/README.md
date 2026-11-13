@@ -1,7 +1,12 @@
 # Test plan
 
-No executable tests exist in the initial scaffold. Add behavior tests alongside
-each implementation step; an empty suite is not a passing validation result.
+`test_extraction.py` contains executable synthetic unit tests for MIME decoding,
+HTML selection, anchor matching, repeated/conflicting links, and error handling.
+These messages are generated with Python's email package or explicit raw bytes;
+they are not the recruiter's samples. Run them with `python -m pytest` using the
+project virtual environment.
+
+Still planned:
 
 - Unit tests: MIME decoding, recipient matching, button-link extraction,
   polling deadlines, and transport errors without a network connection.

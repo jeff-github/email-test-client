@@ -27,9 +27,11 @@ Planned components are an IMAP transport, pure message parsing functions, and a
 wait loop. Tests can exercise parsing and timeout behavior without a server;
 integration tests prove actual protocol behavior against a server.
 
-Use Python's standard `imaplib` and `email` packages initially. Decide on an HTML
-parser after inspecting the real samples. Avoid adding runtime dependencies
-without a concrete need. Pytest, Ruff, and build are development tools only.
+Use Python's standard `imaplib` and `email` packages initially. The first extraction
+implementation uses standard-library `HTMLParser`; it handles anchor text, nested
+inline markup, entities, and line breaks without a runtime dependency. This choice
+is provisional until the real samples are accessible. Pytest, Ruff, and build
+are development tools only.
 
 Use standard IMAP operations rather than Gmail-only extensions. Connection
 settings will expose host, port, mailbox, credentials, and TLS mode. Describe
@@ -53,8 +55,19 @@ The planned convenience API waits for a recipient's message and returns the link
 behind a specified button label. Extract from decoded MIME HTML with an HTML
 parser, not a regex over raw email or the first URL in the message.
 
-Decide and test the policies for missing buttons, repeated identical links,
-conflicting links, and multiple matching messages before exposing the API.
+Implemented extraction policies: select the HTML MIME body using `get_body`,
+decode strictly using its charset, and match normalized anchor text exactly.
+Missing bodies/labels raise `LinkNotFoundError`; identical repeated destinations
+are accepted; conflicting destinations raise `AmbiguousLinkError`. Invalid or
+missing HTTP(S) destinations, decoding failures, and nested/unclosed anchors
+raise `LinkExtractionError`. Error text excludes the message content and URLs.
+Only HTML entity decoding and surrounding href whitespace removal change the
+returned href; query parameters, percent escapes, and redirects are preserved.
+
+This is a structural HTML parser, not a renderer: CSS visibility, image labels,
+VML, plain-text link inference, and general broken-HTML repair are out of scope
+for now. The actual sample files must be inspected to confirm this scope fits.
+Multiple matching messages remain a separate decision for the wait-loop step.
 Timeouts, authentication failures, transport failures, and extraction failures
 should be distinguishable. Diagnostics must not expose credentials or link tokens.
 
@@ -87,3 +100,6 @@ Avoid hiding permanent errors behind timeout retries.
 - How do read-only operations allow independent concurrent readers?
 - What is verified by unit tests versus a real IMAP server?
 - Which assumptions limit correctness when the same recipient is reused?
+- Why decode MIME before parsing HTML, rather than search raw message text?
+- Why match a label instead of selecting the first URL or a CSS class?
+- Why accept repeated identical links but reject conflicting destinations?

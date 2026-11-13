@@ -1,4 +1,15 @@
-"""IMAP email helpers for end-to-end tests.
+"""Email helpers for end-to-end tests."""
 
-The public client API will be introduced with its implementation and tests.
-"""
+from email_test_client.extraction import (
+    AmbiguousLinkError,
+    LinkExtractionError,
+    LinkNotFoundError,
+    extract_button_link,
+)
+
+__all__ = [
+    "AmbiguousLinkError",
+    "LinkExtractionError",
+    "LinkNotFoundError",
+    "extract_button_link",
+]
