@@ -101,8 +101,11 @@ There are no automatic retries of failed tests to conceal flakiness.
 ## Remaining boundaries
 
 Latest validation on 2026-11-14: all 70 tests passed (54 fast, 16 E2E) using
-Python 3.13.7 and GreenMail 2.1.15 on Java 21. Coverage remains 93% overall.
-Reports: `reports/all-2026-11-14.xml` and `reports/coverage-2026-11-14.xml`.
+Windows Python 3.13.7 against GreenMail 2.1.15 in Docker Engine 29.1.3
+(Linux containers), Compose v5.0.0-desktop.1. Coverage remains 93% overall.
+Startup, loopback port mappings and teardown passed without configuration changes.
+Reports: `evidence/docker-2026-11-14.xml` and
+`evidence/coverage-docker-2026-11-14.xml`. The prior Java run is also retained.
 The six new supplied-sample cases assert complete expected URLs for both files:
 direct original-byte extraction, exact-byte IMAP APPEND into isolated folders,
 and SMTP delivery to a fresh plus-address with the original MIME body unchanged.
@@ -117,8 +120,8 @@ on Java 21. All 64 tests passed (52 fast, 12 E2E), including four fast smoke and
 two server smoke cases. Branch-aware coverage: 93% overall, 90% client, 100%
 extraction. Reports are generated under `reports/` and `coverage.xml` (Git-ignored).
 The Docker engine was unavailable; Compose configuration validation passed but
-container execution has not been verified locally. Python 3.12 and hosted CI
-execution remain pending.
+container execution was not verified in that earlier run. The November 14 Docker
+run above closes that gap. Python 3.12 and hosted CI execution remain pending.
 
 The initial real-server smoke run caught a mailbox configuration defect:
 GreenMail created separate users for plus-addresses. Inspection of the 2.1.15

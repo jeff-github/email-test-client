@@ -11,7 +11,9 @@ The assignment's `activation.eml` and `site_invitation.eml` from `homework.zip`
 were validated on November 14, 2026. Both original samples extract the expected
 complete action URLs with no library changes. Six new regression cases cover
 direct extraction, unmodified bytes through IMAP, and SMTP-to-IMAP retrieval with
-only the recipient header changed for run isolation. All 70 tests passed locally.
+only the recipient header changed for run isolation. All 70 tests passed locally, including a verified Docker-backed run.
+GreenMail ran in Docker; pytest and the Python library ran on Windows.
+See `evidence/TEST_RESULTS.md` for versions and saved results.
 
 ## Development setup
 
@@ -39,7 +41,7 @@ Run local server tests using the pinned, loopback-only GreenMail service:
 
 ```powershell
 docker compose up -d
-.\.venv\Scripts\python.exe -m pytest --run-e2e -m e2e
+.\.venv\Scripts\python.exe -m pytest --run-e2e --cov --junitxml=reports/results.xml
 docker compose down
 ```
 
