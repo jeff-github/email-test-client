@@ -1,0 +1,2 @@
+# Preserve supplied message bytes and CRLF MIME boundaries exactly.
+*.eml -text

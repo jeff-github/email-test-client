@@ -1,3 +1,3 @@
 include compose.yaml
 recursive-include docs *.md
-recursive-include tests *.py *.md
+recursive-include tests *.py *.md *.eml *.json

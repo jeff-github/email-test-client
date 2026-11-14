@@ -1,0 +1,12 @@
+{
+  "activation.eml": {
+    "button_text": "Activate account",
+    "recipient": "qa+5e0c7a31@example.com",
+    "url": "https://cloud.example.com/activate?code=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJxYSs1ZTBjN2EzMUBleGFtcGxlLmNvbSIsImV4cCI6MTc5MDA3MjEwMn0.26BhCE-jyNF95wsG0HxupxhABvmyoCh4tAMHIU_coy8&lang=en"
+  },
+  "site_invitation.eml": {
+    "button_text": "Accept invitation",
+    "recipient": "qa+9b24d6f0@example.com",
+    "url": "https://cloud.example.com/invite/accept?token=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJxYSs5YjI0ZDZmMEBleGFtcGxlLmNvbSIsInNpdGUiOiI2ZjFjMmE5ZS0zYjdkLTRlMGEtOWM1NS0wZDhlNGIxZjdhMjEifQ.ZvBriYMfxEA-gE5GXoZz2kAJSn8Zq726s9t7PWaQ2AY&site=6f1c2a9e-3b7d-4e0a-9c55-0d8e4b1f7a21"
+  }
+}

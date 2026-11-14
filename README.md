@@ -7,10 +7,11 @@ A Python 3.12+ library for end-to-end tests that share an IMAP mailbox.
 The extraction function, IMAP client, and wait loop are implemented. Pytest covers
 unit, public Python API, regression, smoke, and real-server end-to-end behavior.
 See [testing instructions](docs/testing.md) for commands and coverage boundaries.
-The assignment's
-`activation.eml` and `site_invitation.eml` samples were not accessible in the chat
-or located in the project/Downloads folders; sample inspection and regression
-tests remain pending. Synthetic messages are not substitutes for those fixtures.
+The assignment's `activation.eml` and `site_invitation.eml` from `homework.zip`
+were validated on November 14, 2026. Both original samples extract the expected
+complete action URLs with no library changes. Six new regression cases cover
+direct extraction, unmodified bytes through IMAP, and SMTP-to-IMAP retrieval with
+only the recipient header changed for run isolation. All 70 tests passed locally.
 
 ## Development setup
 
@@ -104,11 +105,11 @@ from pathlib import Path
 from email_test_client import extract_button_link
 
 link = extract_button_link(
-    Path("activation.eml").read_bytes(), button_text="Activate account"
+    Path("tests/fixtures/activation.eml").read_bytes(), button_text="Activate account"
 )
 ```
 
-The caller supplies the EML file; it is not yet included in this repository.
+Both supplied EML files are included unchanged under `tests/fixtures/`.
 Use `button_text="Accept invitation"` for an invitation message. The function
 returns the link without opening it. It matches anchor text with case and
 whitespace normalized and decodes HTML entities in the destination.
@@ -120,13 +121,14 @@ are accepted. Only absolute HTTP(S) destinations are supported.
 
 The parser does not render CSS or execute JavaScript, infer image-only labels,
 or extract Outlook-only VML buttons. It uses the MIME-selected HTML body and
-excludes attachments. These choices must be checked against the actual samples.
+excludes attachments. Both actual supplied templates pass, including the nested
+multipart/related invitation with an inline logo.
 
 ## Design and scope
 
 See [the design record](docs/design.md) for proposed behavior, assumptions,
 tradeoffs, and the implementation sequence. See [the test matrix](docs/testing.md)
-for evidence and remaining gaps, including real email fixtures and TLS integration.
+for evidence and remaining gaps, including TLS integration and hosted CI.
 
 ## AI assistance
 
@@ -135,7 +137,8 @@ plan, creating the packaging configuration and documentation, and implementing
 the extraction function, IMAP polling, and the pytest testing framework, including
 synthetic unit/API/regression tests, GreenMail E2E tests, smoke checks, and CI.
 Codex ran local validation; see the test documentation for actual results.
-It has not inspected the recruiter's EML files. Update this record as work
+Codex also inspected and validated the two supplied EML files and added regression
+tests without changing the library implementation. Update this record as work
 progresses. The candidate should review and understand each change before submission.
 
 ## Submission

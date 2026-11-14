@@ -100,6 +100,17 @@ There are no automatic retries of failed tests to conceal flakiness.
 
 ## Remaining boundaries
 
+Latest validation on 2026-11-14: all 70 tests passed (54 fast, 16 E2E) using
+Python 3.13.7 and GreenMail 2.1.15 on Java 21. Coverage remains 93% overall.
+Reports: `reports/all-2026-11-14.xml` and `reports/coverage-2026-11-14.xml`.
+The six new supplied-sample cases assert complete expected URLs for both files:
+direct original-byte extraction, exact-byte IMAP APPEND into isolated folders,
+and SMTP delivery to a fresh plus-address with the original MIME body unchanged.
+Expected URLs are static reviewed fixtures, not calculated by the function under
+test. No action link is opened and no token's live validity is asserted.
+The November 13 Word documents are historical baseline documents; their pending
+sample checks are now completed by these new regressions.
+
 Local validation on 2026-11-13: Python 3.13.7, GreenMail 2.1.15 running directly
 on Java 21. All 64 tests passed (52 fast, 12 E2E), including four fast smoke and
 two server smoke cases. Branch-aware coverage: 93% overall, 90% client, 100%
@@ -115,7 +126,7 @@ explicit value `true`. Both documented startup routes now include it, and the
 SMTP-to-shared-IMAP smoke cases pass. This is a concrete example of using smoke
 tests to catch an environment assumption before relying on larger regression runs.
 
-- Actual `activation.eml` and `site_invitation.eml` regression fixtures await upload.
+- Both supplied EML fixtures now pass; see `tests/fixtures/README.md` for provenance.
 - E2E uses plaintext on loopback. TLS/STARTTLS settings have API tests, but
   certificate interoperability requires a separate TLS server setup. No OAuth.
 - GreenMail demonstrates one server, not every IMAP product.

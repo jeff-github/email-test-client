@@ -18,8 +18,10 @@ Implemented coverage:
   mail arriving before and during a wait, old-run isolation, concurrent readers,
   and unchanged message flags.
 
-Pending: keep the two supplied EML samples as fixtures after reviewing them for
-secrets. They have not yet been provided to this project.
+The supplied samples are now preserved unchanged under `fixtures/`, with reviewed
+static expected URLs. `test_supplied_samples.py` checks original-byte extraction;
+`e2e/test_supplied_samples_imap.py` checks original bytes through IMAP and the
+original bodies through SMTP/IMAP with unique recipients. All six new cases passed.
 
 Integration tests use both `integration` and `e2e` markers and a pinned GreenMail
 image. They require `--run-e2e`; see `compose.yaml` and the testing instructions.

@@ -11,7 +11,7 @@ the email before the caller starts waiting. Neither the wait start time nor the
 unread flag identifies the correct run. Old runs are isolated by their different
 recipient addresses, not by clearing a shared mailbox.
 
-Assumptions to confirm against the supplied fixtures:
+Assumptions for callers, confirmed where applicable against the supplied fixtures:
 
 - The caller controls the address used by the application.
 - The original plus-address survives in a message header accessible over IMAP.
@@ -30,7 +30,7 @@ integration tests prove actual protocol behavior against a server.
 Use Python's standard `imaplib` and `email` packages initially. The first extraction
 implementation uses standard-library `HTMLParser`; it handles anchor text, nested
 inline markup, entities, and line breaks without a runtime dependency. This choice
-is provisional until the real samples are accessible. Pytest, Ruff, and build
+works with both supplied samples, validated on November 14, 2026. Pytest, Ruff, and build
 are development tools only.
 
 Use standard IMAP operations rather than Gmail-only extensions. Connection
@@ -66,7 +66,7 @@ returned href; query parameters, percent escapes, and redirects are preserved.
 
 This is a structural HTML parser, not a renderer: CSS visibility, image labels,
 VML, plain-text link inference, and general broken-HTML repair are out of scope
-for now. The actual sample files must be inspected to confirm this scope fits.
+for now. Both actual sample files fit this scope and pass exact-URL regressions.
 Within one search snapshot, multiple matching messages must agree on their URL;
 otherwise the wait raises `AmbiguousLinkError`. Messages lacking the requested
 button are skipped; other extraction failures surface immediately. A successful

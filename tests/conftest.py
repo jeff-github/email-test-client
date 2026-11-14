@@ -1,4 +1,14 @@
+import json
+from pathlib import Path
+
 import pytest
+
+
+@pytest.fixture(params=["activation.eml", "site_invitation.eml"])
+def supplied_sample(request):
+    fixture_dir = Path(__file__).parent / "fixtures"
+    expected = json.loads((fixture_dir / "expected_links.json").read_text())
+    return (fixture_dir / request.param).read_bytes(), expected[request.param]
 
 
 def pytest_addoption(parser):
