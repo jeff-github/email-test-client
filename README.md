@@ -143,7 +143,27 @@ progresses. The candidate should review and understand each change before submis
 
 ## Submission
 
-Keep genuine incremental Git commits. The requested final ZIP should include
-source and a Git bundle preserving history (or be accompanied by a repository
-link), since a normal source ZIP does not preserve Git history. Final packaging
-and clean-install verification are still pending.
+The submission ZIP contains this source tree, both original EML fixtures, the
+three updated Word documents in `docs/deliverables/`, recorded test evidence in
+`evidence/`, and `git-history.bundle` preserving all local Git history and branches.
+It excludes virtual environments, downloaded server binaries, caches and local
+credentials. Install dependencies and start GreenMail as described above.
+
+After extracting the ZIP, run tests from its `EmailTestClient` directory. A source
+ZIP is not itself a Git checkout. To restore the repository and its history:
+
+```text
+git clone --branch codex/link-extraction git-history.bundle ../EmailTestClient-history
+git -C ../EmailTestClient-history log --oneline --all
+```
+
+`SUBMISSION.json` in the ZIP records the packaged commit and bundle SHA256.
+The restored checkout contains the same tracked source and documents as the ZIP;
+the bundle and submission metadata are packaging additions, not tracked files.
+See `evidence/TEST_RESULTS.md` for the executed test environment and limits.
+
+Word documents:
+
+- `docs/deliverables/Interview_Walkthrough.docx`: design explanation and interview rehearsal.
+- `docs/deliverables/Software_Test_Plan.docx`: scope, risks, test strategy and acceptance criteria.
+- `docs/deliverables/Test_Cases_and_User_Journeys.docx`: 48 case descriptions covering 70 test variants.

@@ -108,8 +108,9 @@ direct original-byte extraction, exact-byte IMAP APPEND into isolated folders,
 and SMTP delivery to a fresh plus-address with the original MIME body unchanged.
 Expected URLs are static reviewed fixtures, not calculated by the function under
 test. No action link is opened and no token's live validity is asserted.
-The November 13 Word documents are historical baseline documents; their pending
-sample checks are now completed by these new regressions.
+The Word documents in `docs/deliverables/` have been updated to the November 14
+baseline: 70 passing test variants and completed supplied-sample validation.
+Submission copies of the reports are retained under `evidence/`.
 
 Local validation on 2026-11-13: Python 3.13.7, GreenMail 2.1.15 running directly
 on Java 21. All 64 tests passed (52 fast, 12 E2E), including four fast smoke and
