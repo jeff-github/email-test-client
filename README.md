@@ -146,7 +146,7 @@ progresses. The candidate should review and understand each change before submis
 ## Submission
 
 The submission ZIP contains this source tree, both original EML fixtures, the
-four Word documents in `docs/deliverables/`, recorded test evidence in
+five Word documents in `docs/deliverables/`, recorded test evidence in
 `evidence/`, and `git-history.bundle` preserving all local Git history and branches.
 It excludes virtual environments, downloaded server binaries, caches and local
 credentials. Install dependencies and start GreenMail as described above.
@@ -171,3 +171,8 @@ Word documents:
 - `docs/deliverables/Test_Cases_and_User_Journeys.docx`: 48 case descriptions covering 70 test variants.
 
 - `docs/deliverables/Docker_Test_Interview_Demo_Guide.docx`: PowerShell demo commands, expected results, coverage viewing and troubleshooting.
+
+- `docs/deliverables/Architecture_and_Workflow.docx`: colored stack and workflow diagrams on two large A3 pages.
+
+Original PNG and SVG diagrams and the standalone browser viewer are in
+`docs/diagrams/`. Open `Interview_Diagrams.html` to view and print both diagrams.
